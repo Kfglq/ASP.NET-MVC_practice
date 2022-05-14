@@ -1,0 +1,37 @@
+﻿@model WebApplication1.ViewModel.HomeViewModel
+
+@{
+    ViewBag.Title = "我的購物網站";
+}
+
+
+@Html.AntiForgeryToken()
+
+@Html.Action("Carousel", "Album", null)
+
+<div id="HomeBlock">
+    <div id="LeftBlock" class="col-md-8 col-lg-8 col-sm-8">
+        @Html.Action("Index", "Item", null)
+    </div>
+    <div id="RightBlock" class="col-md-4 col-lg-4 col-sm-4">
+        @Html.Action("GetDataList")
+    </div>
+</div>
+
+<style>
+    #DataList, #form1 {
+        margin-top: 20px;
+    }
+
+    .body-content {
+        width: 100% !important;
+    }
+
+    .btn-default {
+        width: 80%;
+    }
+</style>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

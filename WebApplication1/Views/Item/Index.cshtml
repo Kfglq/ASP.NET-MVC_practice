@@ -1,0 +1,88 @@
+﻿@model WebApplication1.ViewModel.ItemViewModel
+
+@{
+    ViewBag.Title = "商品頁面";
+}
+
+<div id="ItemList" class="table-responsive">
+    <div class="page-header" style="font-size:40px">
+        商品項目
+    </div>
+    <table class="table table-hover">
+        @if (!Model.IdList.Count.Equals(0))
+        {
+            int row = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Model.IdList.Count) / 5));
+            for (int r = 0; r < row; r++)
+            {
+                for (int i = 5 * r; i < (r + 1) * 5; i++)
+                {
+                    if (i < Model.IdList.Count)
+                    {
+                        <tr>
+                            <td id="ItemBlock-@(Model.IdList[i])">
+                                @Html.Partial("ItemBlock", Model.ItemBlock[i])
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">
+                    尚未有商品上架
+                </td>
+            </tr>
+        }
+    </table>
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <text>要使用購物車請先</text>
+        @Html.ActionLink("登入", "Login", "Members")
+    }
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        <a href="@Url.Action("Create")">
+            <input class="btn btn-primary" type="button" value="新增商品" />
+        </a>
+    }
+    <div class="col-xs-12 text-center">
+        <ul class="pagination">
+            <li class="first @((Model.Paging.NowPage > 1) ? "" : "disabled")">
+                @Ajax.ActionLink("<<", "Index", new { Page = 1 }, new AjaxOptions { UpdateTargetId = "ItemList", InsertionMode = InsertionMode.Replace })
+            </li>
+            <li class="pervious @((Model.Paging.NowPage > 1) ? "" : "disabled")">
+                @Ajax.ActionLink("<", "Index", new { Page = Model.Paging.NowPage - 1 }, new AjaxOptions { UpdateTargetId = "ItemList", InsertionMode = InsertionMode.Replace })
+            </li>
+            @for (var page = (Model.Paging.NowPage - 6); page < (Model.Paging.NowPage + 6); page++)
+            {
+                if ((page > 0) && (page <= Model.Paging.MaxPage))
+                {
+                    if (page == Model.Paging.NowPage)
+                    {
+                        <li class="active">
+                            <a href="#">@page</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            @Ajax.ActionLink(page.ToString(), "Index", new { Page = page }, new AjaxOptions { UpdateTargetId = "ItemList", InsertionMode = InsertionMode.Replace })
+                        </li>
+                    }
+                }
+            }
+            <li class="next @((Model.Paging.NowPage < Model.Paging.MaxPage) ? "" : "disabled")">
+                @Ajax.ActionLink(">", "Index", new { Page = Model.Paging.NowPage + 1 }, new AjaxOptions { UpdateTargetId = "ItemList", InsertionMode = InsertionMode.Replace })
+            </li>
+            <li class="last @((Model.Paging.NowPage < Model.Paging.MaxPage) ? "" : "disabled")">
+                @Ajax.ActionLink(">>", "Index", new { Page = Model.Paging.MaxPage }, new AjaxOptions { UpdateTargetId = "ItemList", InsertionMode = InsertionMode.Replace })
+            </li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

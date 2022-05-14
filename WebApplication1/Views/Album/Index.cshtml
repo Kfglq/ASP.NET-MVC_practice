@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "相簿首頁";
+}
+
+<div class="page-header">
+    <h1>相簿</h1>
+</div>
+
+<div class="col-xs-12 text-center hidden" id="showImgBlock">
+    <img id="showImg" src="" style="max-width:100%;"/>
+</div>
+
+@Html.Action("Create","Album")
+<div id="AlbumListBlock">
+    @Html.ActionLink("List","Album")
+</div>
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/jQuery/Album/AlbumList.js")
+}

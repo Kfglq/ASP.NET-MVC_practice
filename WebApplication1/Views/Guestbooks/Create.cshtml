@@ -1,0 +1,25 @@
+﻿@model WebApplication1.Models.Guestbooks
+
+
+@using (Html.BeginForm("Create","Guestbooks")) 
+{
+<div style="margin-top:20px;font-size:20px">
+    <p style="font-size:40px">新增留言</p>
+    <table>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.Content)
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.Content)
+                @Html.ValidationMessageFor(model => model.Content)
+            </td>
+        </tr>
+    </table>
+    <input type="submit" value="新增留言"/>
+</div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

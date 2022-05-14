@@ -1,0 +1,45 @@
+﻿@model WebApplication1.Models.Guestbooks
+
+@{
+    ViewBag.Title = "Reply";
+}
+
+@using (Html.BeginForm()) 
+{
+<div style="margin-top:20px;font-size:20px">
+    <p style="font-size:40px">回覆留言</p>
+    <table>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.Content)
+            </td>
+            <td>
+                @Model.Content
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.Reply)
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.Reply)
+                @Html.ValidationMessageFor(model => model.Reply)
+            </td>
+        </tr>
+    </table>
+    @if (Model.Reply == null)
+    {
+        <input type="submit" value="回覆留言" />
+    }
+    else
+    {
+        <text>留言已被回覆,請</text>
+        @Html.ActionLink("返回列表", "Index")
+    }
+</div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

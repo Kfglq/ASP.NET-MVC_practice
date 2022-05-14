@@ -1,0 +1,45 @@
+﻿@model WebApplication1.ViewModel.AlbumViewModel
+
+@{
+    ViewBag.Title = "相片輪播";
+    int count = (Model.FileList != null) ? Model.FileList.Count : 0;
+}
+
+@Styles.Render("~/Content/AlbumCarousel.css")
+
+<div class="page-header">
+    <h1>相片輪播</h1>
+</div>
+<div id="AlbumListBlock">
+    @Html.Hidden("count", count)
+    <div class="myCarousel">
+        <div class="carousel_container">
+            @if (!Model.FileList.Count.Equals(0))
+            {
+                foreach (var item in Model.FileList)
+                {
+                    <div class="carousel_content">
+                        <img src="@Url.Content("~/Upload/"+item.FileName)" />
+                    </div>
+                }
+            }
+        </div>
+        <ul class="carousel_control">
+            @if (!Model.FileList.Count.Equals(0))
+            {
+                foreach (var item in Model.FileList)
+                {
+                    <li></li>
+                }
+            }
+        </ul>
+        <div class="carousel_previous"></div>
+        <div class="carousel_next"></div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/jQuery/Album/AlbumCarousel.js")
+}

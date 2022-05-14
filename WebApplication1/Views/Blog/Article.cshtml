@@ -1,0 +1,105 @@
+﻿@model WebApplication1.ViewModel.ArticleViewModel
+
+@{
+    ViewBag.Title = Model.article.Member.Name + "的部落格";
+}
+
+<div class="page-header" style="font-size:40px">
+    <h1>@Html.ActionLink(Model.article.Member.Name + "的部落格", "Index", new { Account = Model.article.Account })</h1>
+    @Html.Hidden("articleNumber", Model.article.A_Id)
+</div>
+
+<div id="ArticleBlock">
+    <div id="LeftBlock" class="col-md-8 col-lg-8 col-sm-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    @Html.DisplayNameFor(model => model.article.Title):@Model.article.Title
+                </h3>
+            </div>
+            <div class="panel-body">
+                @Html.Raw(Model.article.Content.Replace("\r\n", "<br />"))
+                <p class="text-right">
+                    觀看人數:@Model.article.Watch
+                </p>
+            </div>
+            <div class="panel-footer text-right">
+                @Html.DisplayNameFor(model => model.article.Account):@Model.article.Member.Name
+            </div>
+        </div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            if (User.Identity.Name == Model.article.Account)
+            {
+                @Ajax.ActionLink("新增文章","CreateArticle","Blog", null, 
+                new AjaxOptions { UpdateTargetId = "CreateArticleModal",InsertionMode = InsertionMode.Replace},
+                new { @class = "btn btn-primary",@data_toggle = "modal",@data_target = "#CreateArticleModal"})
+                <div class="modal fade" id="CreateArticleModal" tabindex="-1" role="dialog" aria-labelledby="CreateArticleModalLabel" aria-hidden="true">
+                </div>
+                if (Model.DataList.Count.Equals(0))
+                {
+                    @Ajax.ActionLink("修改文章", "EditArticle", "Blog", new { A_Id = Model.article.A_Id }, 
+                    new AjaxOptions { UpdateTargetId = "EditArticleModal", InsertionMode = InsertionMode.Replace },
+                    new { @class = "btn btn-primary", @data_toggle = "modal", @data_target = "#EditArticleModal" })
+                }
+                <div class="modal fade" id="EditArticleModal" tabindex="-1" role="dialog" aria-labelledby="CreateArticleModalLabel" aria-hidden="true">
+                </div>
+                @Html.ActionLink("刪除文章", "DeleteArticle", "Blog", new { A_Id = Model.article.A_Id }, new { @class = "btn btn-danger" })
+            }
+            else
+            {
+                <text>非該部落格持有人，請回自己的</text>
+                @Html.ActionLink("部落格", "Index", new {Account = User.Identity.Name})
+                <text>進行編輯</text>
+            }
+        }
+        else
+        {
+            <text>要新增文章請先</text>
+            @Html.ActionLink("登入", "Login", "Members")
+        }
+        <div id="MessageList">
+            @Html.Action("Message", "Blog",new { A_Id = Model.article.A_Id })
+        </div>
+    </div>
+    <div id="RightBlock" class="col-md-4 col-lg-4 col-sm-4">
+        <table>
+            <tr>
+                <td>
+                    <img width="200" src="@Html.Encode(Url.Content("~/Upload/Members/"+Model.article.Member.Image))" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>@Html.DisplayNameFor(model => model.article.Member.Name):@Model.article.Member.Name</h4>
+                </td>
+            </tr>
+        </table>
+        <div id="ArticleListBlock">
+            @Html.Action("ArticleList", "Blog", new { Account = Model.article.Account })
+        </div>
+        <hr>
+    </div>
+</div>
+
+
+<style>
+    #DataList, #forml {
+        margin-top: 20px;
+    }
+
+    .body-content {
+        width: 100% !important;
+    }
+
+    .btn-default {
+        width: 80%;
+    }
+</style>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/jQuery/Article/Article.js")
+    @Scripts.Render("~/jQuery/Article/ArticleList.js")
+    @Scripts.Render("~/jQuery/Message/MessageList.js")
+}

@@ -1,0 +1,37 @@
+﻿@model WebApplication1.ViewModel.ItemDetailViewModel
+
+@{
+    ViewBag.Title = "商品資料-" + Model.Data.Name;
+}
+
+<div class="page-header" style="font-size:25px">
+    @Model.Data.Name
+</div>
+@Html.DisplayNameFor(model => model.Data.Price) :
+@Html.DisplayTextFor(model => model.Data.Price)
+<br />
+<img src="@Html.Encode(Url.Content("~/Upload/"+Model.Data.Image))" />
+<br />
+@if (User.Identity.IsAuthenticated)
+{
+    if (Model.InCart)
+    {
+        @Html.ActionLink("取出", "Pop", "Cart", new { Id = Model.Data.Id, toPage = "Item" }, new { @class = "btn btn-warning" })
+    }
+    else
+    {
+        @Html.ActionLink("放入購物車中", "Put", "Cart", new { Id = Model.Data.Id, toPage = "Item" }, new { @class = "btn btn-primary" })//對Html屬性作設定，只打四個 會讓參數傳的位置不對
+    }
+    if (User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("刪除商品", "Delete", new { Id = Model.Data.Id, fileName = Model.Data.Image }, new { @class = "btn btn-danger" })
+    }
+}
+else
+{
+    <text>要使用購物車，請先</text>
+    @Html.ActionLink("登入", "Login", "Members")
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
